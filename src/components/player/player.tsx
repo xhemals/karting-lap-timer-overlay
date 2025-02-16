@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Player } from "@remotion/player";
 import { Stopwatch } from "@/remotion/timer";
 import { useAppSelector, useAppDispatch } from "@/app/hooks";

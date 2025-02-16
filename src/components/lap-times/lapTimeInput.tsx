@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use client";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";

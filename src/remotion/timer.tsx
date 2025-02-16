@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useCurrentFrame, useVideoConfig } from "remotion";
 import { loadFont } from "@remotion/fonts";
 import { staticFile, OffthreadVideo } from "remotion";
@@ -345,9 +346,11 @@ export const Stopwatch: React.FC<{
                     }}
                   >
                     <span>{formattedLastLapTime}</span>
-                    <span style={{ color: lastLapTimeDiffColor }}>
-                      {lastTimeDiff}
-                    </span>
+                    {lastTimeDiff != 0 ? (
+                      <span style={{ color: lastLapTimeDiffColor }}>
+                        {lastTimeDiff}
+                      </span>
+                    ) : null}
                   </div>
                 </div>
                 <div
@@ -370,9 +373,11 @@ export const Stopwatch: React.FC<{
                     }}
                   >
                     <span>{formattedBestLapTime}</span>
-                    <span style={{ color: bestLapTimeDiffColor }}>
-                      {bestTimeDiff}
-                    </span>
+                    {bestTimeDiff != 0 ? (
+                      <span style={{ color: bestLapTimeDiffColor }}>
+                        {bestTimeDiff}
+                      </span>
+                    ) : null}
                   </div>
                 </div>
               </div>

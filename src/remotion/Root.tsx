@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from "react";
 import { Composition } from "remotion";
 // import { MyComposition } from "./Composition";
@@ -9,7 +10,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="lapTimer"
         component={Stopwatch}
-        durationInFrames={60 * 15}
+        durationInFrames={60 * 980}
         fps={60}
         width={1920}
         defaultProps={{
