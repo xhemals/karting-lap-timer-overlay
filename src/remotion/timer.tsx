@@ -385,7 +385,7 @@ export const Stopwatch: React.FC<{
           </div>
         </div>
       </div>
-      {videoUrl && (
+      {videoUrl != "" && (
         <OffthreadVideo
           src={videoUrl}
           style={{

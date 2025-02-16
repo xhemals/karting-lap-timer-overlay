@@ -31,7 +31,7 @@ export default function RenderButton() {
     ) {
       setShowCommand(true);
       setCommand(
-        `npx remotion render src/remotion/index.tsx lapTimer out/${fileName}-overlay.mov --props='{"sessionName":"${sessionName}", "numberOfLaps":"${numberOfLaps}", "parsedLapTimes":${JSON.stringify(parsedLapTimes)}, "firstLapStartTime":"${firstLapStartTime}", "duration":"${videoDuration}"}' --concurrency="90%"`,
+        `npx remotion render src/remotion/index.tsx lapTimer out/${fileName}-overlay.mov --props='{"sessionName":"${sessionName}", "numberOfLaps":"${numberOfLaps}", "parsedLapTimes":${JSON.stringify(parsedLapTimes)}, "firstLapStartTime":"${firstLapStartTime}", "duration":"${videoDuration}"}' --concurrency="100%" --image-format=png --pixel-format=yuva444p10le --codec=prores --prores-profile=4444-xq --hardwareAcceleration="disable" --muted=true`,
       );
     }
   }
