@@ -11,6 +11,7 @@ import StyledDropzone from "@/components/file-reader/fileReader";
 import LapTimes from "@/components/lap-times/lapTimes";
 import SessionName from "@/components/session-name/sessionName";
 import { Preview } from "@/components/player/player";
+import RenderButton from "@/components/render-button/renderButton";
 
 export default function Home() {
   // const hello = await api.post.hello({ text: "from tRPC" });
@@ -34,6 +35,9 @@ export default function Home() {
       </div>
       <div className="flex h-full w-full flex-col items-center justify-center gap-4">
         <Preview />
+      </div>
+      <div className="flex h-full w-full flex-col items-center justify-center gap-4">
+        <RenderButton />
       </div>
     </Provider>
     // </HydrateClient>
