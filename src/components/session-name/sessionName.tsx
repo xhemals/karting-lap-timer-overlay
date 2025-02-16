@@ -14,7 +14,7 @@ export default function SessionName() {
         type="text"
         id="sessionName"
         value={sessionName}
-        onChange={(e) => dispatch(setSessionName(e.target.value))}
+        onChange={(e) => dispatch(setSessionName(e.target.value.toUpperCase()))}
         className="w-1/4"
       />
     </div>

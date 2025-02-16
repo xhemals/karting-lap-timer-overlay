@@ -3,14 +3,14 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface LapTimesState {
   parsedLapTimes: string[];
-  numberOfLaps: number | null;
-  firstLapStartTime: number | null;
+  numberOfLaps: number;
+  firstLapStartTime: number;
 }
 
 const initialState: LapTimesState = {
   parsedLapTimes: [],
-  numberOfLaps: null,
-  firstLapStartTime: null,
+  numberOfLaps: 0,
+  firstLapStartTime: 0,
 };
 
 export const lapTimesSlice = createSlice({

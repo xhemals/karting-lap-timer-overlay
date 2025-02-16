@@ -4,6 +4,14 @@ import { useAppSelector, useAppDispatch } from "@/app/hooks";
 
 export const Preview: React.FC = () => {
   const videoURL = useAppSelector((state) => state.file.fileURL);
+  const sessionName = useAppSelector((state) => state.sessionName.sessionName);
+  const numberOfLaps = useAppSelector((state) => state.lapTimes.numberOfLaps);
+  const parsedLapTimes = useAppSelector(
+    (state) => state.lapTimes.parsedLapTimes,
+  );
+  const firstLapStartTime = useAppSelector(
+    (state) => state.lapTimes.firstLapStartTime,
+  );
   const videoDuration = useAppSelector(
     (state) => state.file.fileInfo?.duration ?? 1,
   );
@@ -19,7 +27,13 @@ export const Preview: React.FC = () => {
           fps={fps}
           style={{ width: "50%" }}
           controls
-          inputProps={{ videoUrl: videoURL }}
+          inputProps={{
+            videoUrl: videoURL,
+            sessionName: sessionName,
+            numberOfLaps: numberOfLaps,
+            firstLapStartTime: firstLapStartTime,
+            parsedLapTimes: parsedLapTimes,
+          }}
         />
       )}
     </>

@@ -2,10 +2,11 @@ import { useCurrentFrame, useVideoConfig } from "remotion";
 import { loadFont } from "@remotion/fonts";
 import { staticFile, OffthreadVideo } from "remotion";
 import { Timer } from "lucide-react";
+import { number } from "zod";
 
 const fontFamily = "Audiowide";
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-loadFont({
+void loadFont({
   family: fontFamily,
   url: staticFile("/fonts/Audiowide-Regular.ttf"),
   weight: "400",
@@ -48,17 +49,86 @@ export const TimerXXX: React.FC = () => {
   );
 };
 
-export const Stopwatch: React.FC<{ videoUrl: string }> = ({ videoUrl }) => {
+export const Stopwatch: React.FC<{
+  videoUrl: string;
+  sessionName: string;
+  numberOfLaps: number;
+  firstLapStartTime: number;
+  parsedLapTimes: string[];
+}> = ({
+  videoUrl,
+  sessionName,
+  numberOfLaps,
+  firstLapStartTime,
+  parsedLapTimes,
+}) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+  const formatTime = (elapsedTimeInLap: number) => {
+    const minutes = Math.floor(elapsedTimeInLap / 60);
+    const seconds = Math.floor(elapsedTimeInLap % 60);
+    const milliseconds = Math.round((elapsedTimeInLap % 1) * 1000);
 
-  const totalSeconds = frame / fps;
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = Math.floor(totalSeconds % 60);
-  const milliseconds = Math.floor((totalSeconds % 1) * 1000);
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(milliseconds).padStart(3, "0")}`;
+  };
 
-  // Ensuring leading zeros for all values
-  const formattedTime = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(milliseconds).padStart(3, "0")}`;
+  const lapTimes = parsedLapTimes.map(Number);
+  const startFrame = firstLapStartTime * fps;
+  const adjustedFrame = Math.max(frame - startFrame, 0);
+  const adjustedSeconds = adjustedFrame / fps;
+
+  let currentIndex = 0;
+  let accumulatedTime = 0;
+  let lastFinalFrame = 0;
+
+  let currentLap = 0;
+  const finalLap = numberOfLaps;
+  let lastLapTime = 0;
+  let bestLapTime = 9999999;
+  let formattedLastLapTime = "00:00.000";
+  let formattedBestLapTime = "00:00.000";
+
+  for (let i = 0; i < lapTimes.length; i++) {
+    const lapTime = lapTimes[i];
+
+    if (i !== 0) {
+      lastLapTime = lapTimes[i - 1];
+      formattedLastLapTime = formatTime(lastLapTime);
+      if (lastLapTime < bestLapTime) {
+        bestLapTime = lastLapTime;
+        formattedBestLapTime = formatTime(bestLapTime);
+      }
+    }
+
+    if (i === lapTimes.length - 1) {
+      lastFinalFrame =
+        Math.floor((accumulatedTime + lapTime) * fps) + startFrame;
+    }
+
+    if (adjustedSeconds < accumulatedTime + lapTime) {
+      currentIndex = i;
+      break;
+    }
+
+    accumulatedTime += lapTime;
+  }
+
+  if (frame >= startFrame) {
+    currentLap = currentIndex + 1;
+    if (frame > lastFinalFrame && lastFinalFrame !== 0) {
+      currentLap = numberOfLaps;
+    }
+  }
+
+  if (frame < startFrame) {
+    currentLap = 0;
+  }
+
+  const elapsedTimeInLap = adjustedSeconds - accumulatedTime;
+  const formattedTime =
+    frame > lastFinalFrame && lastFinalFrame !== 0
+      ? "00:00.000"
+      : formatTime(elapsedTimeInLap);
 
   return (
     <div
@@ -136,7 +206,7 @@ export const Stopwatch: React.FC<{ videoUrl: string }> = ({ videoUrl }) => {
                     color: "rgb(200,200,200)",
                   }}
                 >
-                  QUALIFYING
+                  {sessionName ? sessionName : "PREVIEW"}
                 </span>
               </div>
               <div
@@ -154,14 +224,22 @@ export const Stopwatch: React.FC<{ videoUrl: string }> = ({ videoUrl }) => {
                   lineHeight: "50px",
                 }}
               >
-                <span style={{ fontStyle: "italic", textAlign: "center" }}>
+                <span
+                  style={{
+                    fontStyle: "italic",
+                    textAlign: "center",
+                    marginRight: "10%",
+                  }}
+                >
                   LAP
                 </span>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <span style={{ color: "white", fontSize: 50, lineHeight: 0 }}>
-                    5
+                    {currentLap}
                   </span>
-                  <span style={{ verticalAlign: "text-top" }}>/17</span>
+                  <span style={{ verticalAlign: "text-top" }}>
+                    /{numberOfLaps ? numberOfLaps : 99}
+                  </span>
                 </div>
               </div>
               <div
@@ -184,21 +262,56 @@ export const Stopwatch: React.FC<{ videoUrl: string }> = ({ videoUrl }) => {
                   {formattedTime}
                 </span>
               </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  fontSize: 25,
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5%",
+                    width: "100%",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <span>LAST:</span>
+                  <span style={{ width: "175px" }}>{formattedLastLapTime}</span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5%",
+                    width: "100%",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <span>BEST:</span>
+                  <span style={{ width: "175px" }}>{formattedBestLapTime}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <OffthreadVideo
-        src={videoUrl}
-        style={{
-          width: "100%",
-          height: "100%",
-          position: "absolute", // Allows it to be positioned behind
-          top: 0,
-          left: 0,
-          zIndex: -1, // Places it behind everything
-        }}
-      />
+      {videoUrl && (
+        <OffthreadVideo
+          src={videoUrl}
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "absolute", // Allows it to be positioned behind
+            top: 0,
+            left: 0,
+            zIndex: -1, // Places it behind everything
+          }}
+        />
+      )}
     </div>
   );
 };
