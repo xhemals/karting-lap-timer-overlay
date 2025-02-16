@@ -2,7 +2,6 @@ import { useCurrentFrame, useVideoConfig } from "remotion";
 import { loadFont } from "@remotion/fonts";
 import { staticFile, OffthreadVideo } from "remotion";
 import { Timer } from "lucide-react";
-import { number } from "zod";
 
 const fontFamily = "Audiowide";
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -397,3 +396,4 @@ export const Stopwatch: React.FC<{
     </div>
   );
 };
+export { Timer };

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useRef } from "react";
 import { useDropzone } from "react-dropzone";
-import changeFileExtension from "change-file-extension";
+// import changeFileExtension from "change-file-extension";
 import { Button } from "@/components/ui/button";
 
 import { useAppSelector, useAppDispatch } from "@/app/hooks";
@@ -56,7 +56,7 @@ export default function StyledDropzone(_props: Record<string, never>) {
           video.onloadedmetadata = () => {
             dispatch(
               setFileInfo({
-                name: changeFileExtension(acceptedFile[0]!.name, ""),
+                name: acceptedFile[0]!.name,
                 type: acceptedFile[0]!.type,
                 duration: video.duration,
               }),
