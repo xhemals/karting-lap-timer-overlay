@@ -84,6 +84,10 @@ export const Stopwatch: React.FC<{
   let currentLap = 0;
   const finalLap = numberOfLaps;
   let lastLapTime = 0;
+  let lastTimeDiff = 0;
+  let bestTimeDiff = 0;
+  let lastLapTimeDiffColor = "green";
+  let bestLapTimeDiffColor = "orange";
   let bestLapTime = 9999999;
   let formattedLastLapTime = "00:00.000";
   let formattedBestLapTime = "00:00.000";
@@ -93,6 +97,29 @@ export const Stopwatch: React.FC<{
 
     if (i !== 0) {
       lastLapTime = lapTimes[i - 1];
+      if (i > 1) {
+        const lastLaptimeDiff = Math.abs(lastLapTime - lapTimes[i - 2]);
+        const lastLapSign = lastLapTime - lapTimes[i - 2] >= 0 ? "+" : "-";
+        if (lastLapSign === "+") {
+          lastLapTimeDiffColor = "orange";
+        } else {
+          lastLapTimeDiffColor = "green";
+        }
+        lastTimeDiff =
+          lastLapSign +
+          (lastLaptimeDiff >= 60
+            ? formatTime(lastLaptimeDiff)
+            : lastLaptimeDiff.toFixed(3));
+        const timeDiff = Math.abs(lastLapTime - bestLapTime);
+        const sign = lastLapTime - bestLapTime >= 0 ? "+" : "-";
+        if (sign === "+") {
+          bestLapTimeDiffColor = "orange";
+        } else {
+          bestLapTimeDiffColor = "purple";
+        }
+        bestTimeDiff =
+          sign + (timeDiff >= 60 ? formatTime(timeDiff) : timeDiff.toFixed(3));
+      }
       formattedLastLapTime = formatTime(lastLapTime);
       if (lastLapTime < bestLapTime) {
         bestLapTime = lastLapTime;
@@ -116,7 +143,37 @@ export const Stopwatch: React.FC<{
   if (frame >= startFrame) {
     currentLap = currentIndex + 1;
     if (frame > lastFinalFrame && lastFinalFrame !== 0) {
+      lastLapTime = lapTimes[lapTimes.length - 1];
       currentLap = numberOfLaps;
+      const lastLaptimeDiff = Math.abs(
+        lastLapTime - lapTimes[lapTimes.length - 2],
+      );
+      const lastLapSign =
+        lastLapTime - lapTimes[lapTimes.length - 2] >= 0 ? "+" : "-";
+      if (lastLapSign === "+") {
+        lastLapTimeDiffColor = "orange";
+      } else {
+        lastLapTimeDiffColor = "green";
+      }
+      lastTimeDiff =
+        lastLapSign +
+        (lastLaptimeDiff >= 60
+          ? formatTime(lastLaptimeDiff)
+          : lastLaptimeDiff.toFixed(3));
+      formattedLastLapTime = formatTime(lastLapTime);
+      const timeDiff = Math.abs(lastLapTime - bestLapTime);
+      const sign = lastLapTime - bestLapTime >= 0 ? "+" : "-";
+      bestTimeDiff =
+        sign + (timeDiff >= 60 ? formatTime(timeDiff) : timeDiff.toFixed(3));
+      if (sign === "+") {
+        bestLapTimeDiffColor = "orange";
+      } else {
+        bestLapTimeDiffColor = "purple";
+      }
+      if (lastLapTime < bestLapTime) {
+        bestLapTime = lastLapTime;
+        formattedBestLapTime = formatTime(bestLapTime);
+      }
     }
   }
 
@@ -142,21 +199,21 @@ export const Stopwatch: React.FC<{
     >
       <div
         style={{
-          width: "25%",
+          width: "27.5%",
           marginLeft: "2rem",
           marginTop: "2rem",
           // borderTop: "15px solid rgba(245, 245, 245, 0.5)",
           // borderLeft: "15px solid rgba(245, 245, 245, 0.5)",
           // borderBottom: "15px solid rgba(245, 245, 245, 0.5)",
-          borderRadius: "25px 0 0 25px",
+          borderRadius: "25px",
           backgroundColor: "rgba(245, 245, 245, 0.5)",
-          padding: "15px 0 15px 15px",
+          padding: "15px",
         }}
       >
         <div
           style={{
             backgroundColor: "rgba(50, 50, 50, 0.75)",
-            borderRadius: "13.75px 0 0 13.75px",
+            borderRadius: "13.75px",
             height: "100%",
             display: "inline-block",
             width: "100%",
@@ -170,7 +227,7 @@ export const Stopwatch: React.FC<{
               display: "inline-block",
               width: "100%",
               padding: "10px",
-              borderRadius: "8.125px 0 0 8.125px",
+              borderRadius: "8.125px",
             }}
           >
             <div
@@ -199,7 +256,7 @@ export const Stopwatch: React.FC<{
                 />
                 <span
                   style={{
-                    fontSize: 35,
+                    fontSize: 40,
                     fontWeight: "bold",
                     width: "100%",
                     textAlign: "center",
@@ -276,11 +333,23 @@ export const Stopwatch: React.FC<{
                     alignItems: "center",
                     gap: "5%",
                     width: "100%",
-                    justifyContent: "flex-end",
+                    justifyContent: "space-between",
+                    padding: "0 5% 0 5%",
                   }}
                 >
                   <span>LAST:</span>
-                  <span style={{ width: "175px" }}>{formattedLastLapTime}</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      width: "70%",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>{formattedLastLapTime}</span>
+                    <span style={{ color: lastLapTimeDiffColor }}>
+                      {lastTimeDiff}
+                    </span>
+                  </div>
                 </div>
                 <div
                   style={{
@@ -288,11 +357,24 @@ export const Stopwatch: React.FC<{
                     alignItems: "center",
                     gap: "5%",
                     width: "100%",
-                    justifyContent: "flex-end",
+                    justifyContent: "space-between",
+                    padding: "0 5% 0 5%",
+                    lineHeight: "20px",
                   }}
                 >
                   <span>BEST:</span>
-                  <span style={{ width: "175px" }}>{formattedBestLapTime}</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      width: "70%",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>{formattedBestLapTime}</span>
+                    <span style={{ color: bestLapTimeDiffColor }}>
+                      {bestTimeDiff}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
