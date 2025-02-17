@@ -12,7 +12,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="lapTimer"
         component={Stopwatch}
-        durationInFrames={60 * duration}
+        durationInFrames={Math.floor(60 * duration)}
         fps={60}
         width={1920}
         defaultProps={{

@@ -22,7 +22,7 @@ export const Preview: React.FC = () => {
       {videoURL && (
         <Player
           component={Stopwatch}
-          durationInFrames={videoDuration * fps}
+          durationInFrames={Math.floor(videoDuration * fps)}
           compositionWidth={1920}
           compositionHeight={1080}
           fps={fps}
